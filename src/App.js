@@ -7,24 +7,28 @@ import CustomNavbar from './components/Navbar/Navbar'
 import AuthProvider from './provider/AuthProvider'
 import Community from './components/Community'
 import Profile from './components/Profile'
+import PrivateRoute from './components/PrivateRoute'
+import { AlertProvider } from './provider/AlertProvider'
 
 function App() {
-  console.log(process.env.REACT_APP_FIREBASE_APP_ID)
+  // Todo: Alert layout
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <CustomNavbar />
-        <section className="container">
-          <Switch>
-            <Route exact path="/" component={Community} />
-            <Route exact path="/profile" component={Profile} />
-            {/* <Route exact path="/users/:username" component={Profile} /> */}
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/signin" component={SignIn} />
-          </Switch>
-        </section>
-      </BrowserRouter>
-    </AuthProvider>
+    <AlertProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <CustomNavbar />
+          <section className="container">
+            <Switch>
+              <Route exact path="/" component={Community} />
+              <Route exact path="/register" component={Register} />
+              <Route exact path="/signin" component={SignIn} />
+              <PrivateRoute exact path="/profile" component={Profile} />
+              {/* <PrivateRoute exact path="/users/:id" component={Profile} /> */}
+            </Switch>
+          </section>
+        </BrowserRouter>
+      </AuthProvider>
+    </AlertProvider>
   )
 }
 

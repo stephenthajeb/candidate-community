@@ -1,15 +1,16 @@
 import React, { useContext, useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
+import { Redirect } from 'react-router-dom'
 import fb from '../firebase/firebaseConfig'
 import { firebaseAuth } from '../provider/AuthProvider'
 import FormType from './FormComponent/FormType'
 
 const initialInputs = { email: '', password: '' }
 
-// Todo: add optional fields input
 const SignIn = () => {
   const [inputs, setInputs] = useState(initialInputs)
   const { email, password } = inputs
+  const { token } = useContext(firebaseAuth)
   const inputFields = [
     {
       label: 'Your Email',
@@ -35,7 +36,7 @@ const SignIn = () => {
 
   const { setToken } = useContext(firebaseAuth)
 
-  const signIn = (email, password) => {
+  const signIn = async (email, password) => {
     fb.auth()
       .signInWithEmailAndPassword(email, password)
       .then(async (res) => {
@@ -43,9 +44,6 @@ const SignIn = () => {
         //set token to localStorage
         await localStorage.setItem('token', token)
         setToken(token)
-      })
-      .catch((err) => {
-        console.log(err.message)
       })
   }
 
@@ -57,7 +55,11 @@ const SignIn = () => {
       console.log(err)
     }
   }
-  return (
+  return token ? (
+    <>
+      <Redirect to="/" />
+    </>
+  ) : (
     <Form onSubmit={onSubmit}>
       {inputFields.map((field) => (
         <FormType

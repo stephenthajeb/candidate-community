@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { Form, Button } from 'react-bootstrap'
+import { Redirect } from 'react-router'
 import fb from '../firebase/firebaseConfig'
 import { firebaseAuth } from '../provider/AuthProvider'
 import FormType from './FormComponent/FormType'
@@ -13,7 +14,7 @@ const initialInputs = {
 // Todo: add alertbox
 const Register = () => {
   const [inputs, setInputs] = useState(initialInputs)
-  const { setToken } = useContext(firebaseAuth)
+  const { token, setToken } = useContext(firebaseAuth)
 
   const { email, password, username } = inputs
   const inputFields = [
@@ -88,7 +89,11 @@ const Register = () => {
       console.log(err.message)
     }
   }
-  return (
+  return token ? (
+    <>
+      <Redirect to="/" />
+    </>
+  ) : (
     <Form onSubmit={onSubmit}>
       {inputFields.map((field) => (
         <FormType

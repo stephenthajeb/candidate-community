@@ -1,33 +1,35 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import { firebaseAuth } from '../../provider/AuthProvider'
 import Hamburger from './Hamburger'
+import { Button } from 'react-bootstrap'
 import './Navbar.css'
 
-const navLinks = [
-  {
-    path: '/profile',
-    name: 'Profile',
-    icon: 'info-circle',
-  },
+// Todo: Refactor
+
+const unAuthNavLinks = [
   {
     path: '/register',
     name: 'Register',
-    icon: 'hand-point-down',
   },
   {
     path: '/signin',
     name: 'Sign in',
-    icon: 'mail-bulk',
   },
+]
+
+const authNavlinks = [
   {
-    path: '/signout',
-    name: 'Sign out',
-    icon: 'mail-bulk',
+    path: '/profile',
+    name: 'Profile',
   },
 ]
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { token, setToken } = useContext(firebaseAuth)
+  const navLinks = token ? authNavlinks : unAuthNavLinks
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
     const menu = document.getElementById('hamburger')
@@ -50,6 +52,11 @@ const Navbar = () => {
       navOverlay.classList.remove('show')
     }
   }
+
+  const handleSignOut = () => {
+    localStorage.removeItem('token')
+    setToken(null)
+  }
   return (
     <>
       <NavOverlay closeMenu={closeMenu} />
@@ -57,8 +64,7 @@ const Navbar = () => {
         <div className="container-fluid px-3 py-3">
           <div className="mr-auto">
             <Link to="/" className="home-icon">
-              <i className="fas fa-tractor"></i>
-              <span>Home Logo</span>
+              <span>Candidates Community</span>
             </Link>
           </div>
           <div className="nav-item-wrapper">
@@ -73,6 +79,17 @@ const Navbar = () => {
                 {item.name}
               </NavLink>
             ))}
+            {token && (
+              <Button
+                type="button"
+                variant="danger"
+                size="sm"
+                onClick={() => handleSignOut()}
+                className="ml-4"
+              >
+                Sign out
+              </Button>
+            )}
           </div>
           <Hamburger toggleMenu={toggleMenu} />
         </div>
@@ -82,13 +99,12 @@ const Navbar = () => {
 }
 
 const NavOverlay = ({ closeMenu }) => {
+  const { token } = useContext(firebaseAuth)
+  const navLinks = token ? authNavlinks : unAuthNavLinks
   return (
     <div id="nav-overlay" className="navigation overlay">
       <div className="d-flex flex-column">
-        <div className="nav-icon sidebar-logo">
-          <i className="fas fa-tractor"></i>
-          Home
-        </div>
+        <div className="nav-icon sidebar-logo">Candidates Community</div>
         {navLinks.map((item) => (
           <div key={item.name} className="sidebar-nav-wrap">
             <NavLink
@@ -97,9 +113,6 @@ const NavOverlay = ({ closeMenu }) => {
               className="sidebar-nav-item"
               onClick={() => closeMenu()}
             >
-              <div>
-                <i className={'nav-icon fas fa-' + item.icon}></i>
-              </div>
               {item.name}
             </NavLink>
           </div>

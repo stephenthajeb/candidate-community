@@ -1,6 +1,5 @@
 import firebase from 'firebase'
 
-// Todo
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_DOMAIN,

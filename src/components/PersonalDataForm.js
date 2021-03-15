@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
-import { getUserFile, submitPersonalData, uploadFile } from '../firebase/utils'
+import { submitPersonalData } from '../firebase/utils'
 import FormType from './FormComponent/FormType'
 
-const PersonalDataEdit = ({ showModal, hideModal }) => {
+const PersonalDataForm = ({ showModal, hideModal, data }) => {
   const initialState = {
     name: '',
     age: '',
     profile: null,
   }
-  const [inputs, setInputs] = useState(initialState)
+  const [inputs, setInputs] = useState(data ? data : initialState)
   const { name, age, profile } = inputs
   const profileAllowedType = ['image/png']
 
@@ -102,4 +102,4 @@ const PersonalDataEdit = ({ showModal, hideModal }) => {
   )
 }
 
-export default PersonalDataEdit
+export default PersonalDataForm
