@@ -1,0 +1,22 @@
+.navlink,
+.navbrand {
+  color: white;
+  text-decoration: none;
+}
+
+.navbrand {
+  font-size: larger;
+}
+
+.navbrand:hover,
+.navlink:focus {
+  text-decoration: none;
+  color: white;
+}
+
+.navlink:hover,
+.navlink:focus {
+  text-decoration: none;
+  border-bottom: 1px solid orange;
+  color: orange !important;
+}

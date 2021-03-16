@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import { firebaseAuth } from '../provider/AuthProvider'
+import { firebaseAuth } from '../../../../provider/AuthProvider'
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const { token } = useContext(firebaseAuth)
-
+  console.log(token)
   return (
     <Route
       {...rest}

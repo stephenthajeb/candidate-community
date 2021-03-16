@@ -1,5 +1,4 @@
 import React, { createContext, useState, useCallback } from 'react'
-import { Alert } from 'react-bootstrap'
 
 export const AlertContext = createContext(null)
 
@@ -21,7 +20,6 @@ export const AlertProvider = ({ children }) => {
 
   return (
     <AlertContext.Provider value={alertContextValue}>
-      {alert.show ? <Alert variant={alert.type}>{alert.message}</Alert> : null}
       {children}
     </AlertContext.Provider>
   )

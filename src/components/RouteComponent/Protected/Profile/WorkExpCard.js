@@ -8,7 +8,7 @@ const WorkExpCard = ({ data, idx }) => {
     company,
     start,
     desc,
-    endDate: isStillWorking ? 'now' : end,
+    end: isStillWorking ? 'now' : end,
   }
   const [showExpEditModal, setShowExpEditModal] = useState(false)
 
@@ -17,25 +17,30 @@ const WorkExpCard = ({ data, idx }) => {
     <>
       <Card>
         <Card.Header>
-          <h2>
+          <h5>
             {title}
             <span className="float-right">
               <Button
                 variant="warning"
+                size="sm"
                 type="button"
                 onClick={() => setShowExpEditModal(true)}
               >
                 Edit
               </Button>
             </span>
-          </h2>
+          </h5>
         </Card.Header>
         <Card.Body>
           <Row>
-            <Col sm={3}>
+            <Col
+              lg={3}
+              md={12}
+              className="m-auto d-md-flex justify-content-center"
+            >
               <Image src={companyLogo} fluid />
             </Col>
-            <Col sm={9}>
+            <Col lg={9}>
               {Object.keys(textData).map((key) => (
                 <div key={key}>
                   {key} : <span>{data[key]}</span>{' '}

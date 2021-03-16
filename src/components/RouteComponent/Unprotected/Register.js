@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { Redirect } from 'react-router'
-import fb from '../firebase/firebaseConfig'
-import { firebaseAuth } from '../provider/AuthProvider'
-import FormType from './FormComponent/FormType'
+import fb from '../../../firebase/firebaseConfig'
+import { AlertContext } from '../../../provider/AlertProvider'
+import { firebaseAuth } from '../../../provider/AuthProvider'
+import FormType from '../../FormComponent/FormType'
 
 const initialInputs = {
   username: '',
@@ -15,6 +16,7 @@ const initialInputs = {
 const Register = () => {
   const [inputs, setInputs] = useState(initialInputs)
   const { token, setToken } = useContext(firebaseAuth)
+  const { addAlert } = useContext(AlertContext)
 
   const { email, password, username } = inputs
   const inputFields = [
@@ -71,9 +73,8 @@ const Register = () => {
         })
 
         // store the user data accessibility with default to private
-        fb.database().ref(`accessiblity/${username}`).set({
+        fb.database().ref(`accessibility/${username}`).set({
           name: false,
-          about: false,
           age: false,
           profilePicture: false,
           workExperiences: false,
@@ -84,9 +85,11 @@ const Register = () => {
   const onSubmit = async (e) => {
     e.preventDefault()
     try {
+      if (password.trim().length < 6)
+        throw new Error('Password consist of minimal 6 character')
       await registerToFirebase({ username, email, password })
     } catch (err) {
-      console.log(err.message)
+      addAlert('danger', err.message)
     }
   }
   return token ? (

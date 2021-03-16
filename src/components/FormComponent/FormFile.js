@@ -2,6 +2,7 @@ import React from 'react'
 import { Form } from 'react-bootstrap'
 
 const FormFile = ({ field, onChangeHandler }) => {
+  // Todo: Custom
   return (
     <Form.Group>
       <Form.Label>{field.label}</Form.Label>
@@ -11,7 +12,7 @@ const FormFile = ({ field, onChangeHandler }) => {
         accept={field.accept}
         required={field.required}
         onChange={(e) => onChangeHandler(e)}
-        custom
+        // custom
       />
     </Form.Group>
   )

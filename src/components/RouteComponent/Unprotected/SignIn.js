@@ -1,16 +1,18 @@
 import React, { useContext, useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom'
-import fb from '../firebase/firebaseConfig'
-import { firebaseAuth } from '../provider/AuthProvider'
-import FormType from './FormComponent/FormType'
+import fb from '../../../firebase/firebaseConfig'
+import { AlertContext } from '../../../provider/AlertProvider'
+import { firebaseAuth } from '../../../provider/AuthProvider'
+import FormType from '../../FormComponent/FormType'
 
 const initialInputs = { email: '', password: '' }
 
 const SignIn = () => {
   const [inputs, setInputs] = useState(initialInputs)
   const { email, password } = inputs
-  const { token } = useContext(firebaseAuth)
+  const { token, setToken } = useContext(firebaseAuth)
+  const { addAlert } = useContext(AlertContext)
   const inputFields = [
     {
       label: 'Your Email',
@@ -34,24 +36,22 @@ const SignIn = () => {
   const onChangeHandler = (e) =>
     setInputs({ ...inputs, [e.target.name]: e.target.value })
 
-  const { setToken } = useContext(firebaseAuth)
-
   const signIn = async (email, password) => {
-    fb.auth()
+    await fb
+      .auth()
       .signInWithEmailAndPassword(email, password)
       .then(async (res) => {
-        const token = await Object.entries(res.user)[5][1].b
-        //set token to localStorage
-        await localStorage.setItem('token', token)
-        setToken(token)
+        const newToken = await Object.entries(res.user)[5][1].b
+        localStorage.setItem('token', newToken)
       })
+    setToken(localStorage.getItem('token'))
   }
-
   const onSubmit = async (e) => {
     e.preventDefault()
     try {
       await signIn(email, password)
     } catch (err) {
+      addAlert('danger', err.message)
       console.log(err)
     }
   }

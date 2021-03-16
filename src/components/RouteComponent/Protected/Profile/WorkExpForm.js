@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
-import { submitExpData } from '../firebase/utils'
-import { AlertContext } from '../provider/AlertProvider'
-import FormType from './FormComponent/FormType'
+import { submitExpData } from '../../../../firebase/utils'
+import { AlertContext } from '../../../../provider/AlertProvider'
+import FormType from '../../../FormComponent/FormType'
 const WorkExpForm = ({ showModal, hideModal, data, idx }) => {
   // Start date
   // End date (allow a current position option)
@@ -36,7 +36,7 @@ const WorkExpForm = ({ showModal, hideModal, data, idx }) => {
     {
       label: 'Still Work Here ? (Leave the end date if you checked this)',
       componentType: 'check',
-      name: 'isStillWork',
+      name: 'isStillWorking',
       type: 'checkbox',
       value: isStillWorking,
       required: false,
@@ -83,6 +83,9 @@ const WorkExpForm = ({ showModal, hideModal, data, idx }) => {
   const onChangeHandler = (e) => {
     if (e.target.name === 'companyLogo') {
       setInputs({ ...inputs, companyLogo: e.target.files[0] })
+    } else if (e.target.name === 'isStillWorking') {
+      setInputs({ ...inputs, isStillWorking: !isStillWorking })
+      console.log(e.target)
     } else {
       setInputs({ ...inputs, [e.target.name]: e.target.value })
     }

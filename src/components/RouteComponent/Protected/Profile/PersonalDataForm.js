@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
-import { submitPersonalData } from '../firebase/utils'
-import FormType from './FormComponent/FormType'
+import { submitPersonalData } from '../../../../firebase/utils'
+import FormType from '../../../FormComponent/FormType'
 
 const PersonalDataForm = ({ showModal, hideModal, data }) => {
   const initialState = {

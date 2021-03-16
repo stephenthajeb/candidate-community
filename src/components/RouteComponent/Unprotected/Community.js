@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import fb from '../firebase/firebaseConfig'
+import fb from '../../../firebase/firebaseConfig'
 import { Button } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
-import jwt_decode from 'jwt-decode'
 
 const Community = () => {
   const [users, setUsers] = useState([])
@@ -10,10 +9,11 @@ const Community = () => {
 
   useEffect(() => {
     fb.database()
-      .ref('/users')
+      .ref('/accessibility')
       .get()
       .then((snapshot) => {
-        const fetchedData = Object.values(snapshot.val())
+        console.log(snapshot.val())
+        const fetchedData = Object.keys(snapshot.val())
         setUsers([...fetchedData])
       })
       .catch((err) => console.log(err))
@@ -21,21 +21,18 @@ const Community = () => {
 
   useEffect(() => console.log(users), [users])
 
-  const decoded = jwt_decode(localStorage.getItem('token'))
-  console.log(decoded)
-
   return (
     <div>
-      <h1>Candidates List View</h1>
+      <h2 className="mb-3">Candidates List View</h2>
       <ul className="list-group">
         {users &&
-          users.map((user) => (
-            <li className="list-group-item" key={user.username}>
-              {user.username}
+          users.map((username) => (
+            <li className="list-group-item" key={username}>
+              {username}
               <Button
                 variant="info"
                 className="float-right"
-                onClick={() => history.push(`users/${user.username}`)}
+                onClick={() => history.push(`users/${username}`)}
               >
                 See Details
               </Button>

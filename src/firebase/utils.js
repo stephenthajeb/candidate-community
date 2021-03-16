@@ -33,3 +33,29 @@ export const submitExpData = async (data, idx) => {
       desc: desc,
     })
 }
+
+export const getUserAllData = async (username) => {
+  const decoded = jwt_decode(localStorage.getItem('token'))
+  const snapshot = await fb.database().ref(`users/${decoded.user_id}`).get()
+  let data = snapshot.val()
+  let output
+  const userAccessibleData = await fb
+    .database()
+    .ref(`accessibility/${username}`)
+    .get()
+  //reading other user's userData
+  if (data.username !== username) {
+    data = {}
+    Object.keys(userAccessibleData).forEach((key) => {
+      //public atttribute
+      if (userAccessibleData[key] && data[key]) {
+        Object.assign(data, { key: data[key] })
+      }
+      output = { data: { ...data }, isCurrentUser: false }
+    })
+  } else {
+    output = { data: { ...data }, isCurrentUser: true }
+  }
+  console.log(output)
+  return output
+}
