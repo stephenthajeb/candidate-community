@@ -55,7 +55,8 @@ const Register = () => {
       if (password.trim().length < 6)
         throw new Error('Password consist of minimal 6 character')
       await registerToFirebase({ username, email, password })
-      await setToken(localStorage.getItem('token'))
+      const token = await localStorage.getItem('token')
+      await setToken(token)
     } catch (err) {
       addAlert('danger', err.message)
     }

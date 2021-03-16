@@ -12,7 +12,7 @@ const Community = () => {
   const fetchUsernames = useCallback(async () => {
     try {
       const data = await getAllUsername()
-      await setUsers(data)
+      setUsers(data)
     } catch (err) {
       addAlert('danger', err.message)
     }

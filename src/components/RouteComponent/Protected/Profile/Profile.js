@@ -63,7 +63,7 @@ const Profile = () => {
                 className="m-auto d-md-flex justify-content-center"
               >
                 {profile ? (
-                  <Image fluid src={profile} roundedCircle />
+                  <Image fluid src={profile} />
                 ) : (
                   <Image
                     fluid

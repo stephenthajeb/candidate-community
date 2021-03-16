@@ -12,4 +12,3 @@ const AuthProvider = (props) => {
   )
 }
 export default AuthProvider
-

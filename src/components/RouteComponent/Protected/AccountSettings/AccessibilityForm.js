@@ -8,7 +8,7 @@ import FormCheck from '../../../FormComponent/FormCheck'
 const initialState = {
   name: false,
   age: false,
-  profilePicture: false,
+  profile: false,
   workExperiences: false,
 }
 
@@ -20,6 +20,7 @@ const AccessibilityForm = ({ showModal, hideModal }) => {
     e.preventDefault()
     try {
       await submitAccessibilitySettings(inputs)
+      setInputs(initialState)
       hideModal()
     } catch (err) {
       hideModal()
@@ -30,14 +31,14 @@ const AccessibilityForm = ({ showModal, hideModal }) => {
     setInputs({ ...inputs, [e.target.name]: !inputs[e.target.name] })
   }
 
-  const { name, age, profilePicture, workExperiences } = inputs
+  const { name, age, profile, workExperiences } = inputs
 
   const fields = [
     {
       label: 'Profile. Set data visibility to public?',
-      name: 'profilePicture',
+      name: 'profile',
       type: 'checkbox',
-      value: profilePicture,
+      value: profile,
       required: false,
     },
     {

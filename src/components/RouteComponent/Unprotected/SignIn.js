@@ -40,7 +40,8 @@ const SignIn = () => {
     e.preventDefault()
     try {
       await signIn(email, password)
-      await setToken(localStorage.getItem('token'))
+      const token = await localStorage.getItem('token')
+      await setToken(token)
     } catch (err) {
       addAlert('danger', err.message)
     }

@@ -23,7 +23,7 @@ const Settings = () => {
   const accessibilityData = [
     {
       label: 'Your profile picture visibility is set to: ',
-      value: accessibility && accessibility.profilePicture,
+      value: accessibility && accessibility.profile,
     },
     {
       label: 'Your name visibility is set to:',

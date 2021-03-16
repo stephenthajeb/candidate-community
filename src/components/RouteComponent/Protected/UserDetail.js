@@ -24,8 +24,7 @@ const UserDetail = () => {
     fetchAccessibleData()
   }, [fetchAccessibleData])
 
-  useEffect(() => {
-  }, [userData])
+  useEffect(() => {}, [userData])
 
   return !isCurrentUser ? (
     <>
@@ -40,8 +39,8 @@ const UserDetail = () => {
                 md={12}
                 className="m-auto d-md-flex justify-content-center"
               >
-                {profile && profile ? (
-                  <Image fluid src={profile} roundedCircle />
+                {profile ? (
+                  <Image fluid src={profile} />
                 ) : (
                   <Image
                     fluid

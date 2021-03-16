@@ -45,23 +45,38 @@ export const submitAccessibilitySettings = async (data) => {
 }
 
 export const getUserAllData = async (username) => {
+  // Current User
   const decoded = jwt_decode(localStorage.getItem('token'))
   const snapshot = await fb.database().ref(`users/${decoded.user_id}`).get()
-  let data = await snapshot.val()
+  const currentUserData = await snapshot.val()
+
+  // Get Target User's Id by it's username
   const accSnapshot = await fb.database().ref(`accessibility/${username}`).get()
   const userAccessibleData = await accSnapshot.val()
-  let output = {}
+
+  // Get Target User's data
+  const userDataSnapshot = await fb
+    .database()
+    .ref(`users/${userAccessibleData.user_id}`)
+    .get()
+  const userData = await userDataSnapshot.val()
+
+  const output = {}
   //reading other user's userData
-  if (data.username !== username) {
+  if (
+    userData &&
+    currentUserData &&
+    userData.username !== currentUserData.username
+  ) {
     Object.keys(userAccessibleData).forEach((key) => {
       // Public attribute
-      if (userAccessibleData[key]) {
-        output[key] = data[key]
+      if (userAccessibleData[key] && key !== 'user_id') {
+        output[key] = userData[key]
       }
       return { ...output, isCurrentUser: false }
     })
   } else {
-    return { ...output, isCurrentUser: true }
+    return { ...currentUserData, isCurrentUser: true }
   }
   return output
 }
@@ -100,23 +115,25 @@ export const registerToFirebase = async ({ username, email, password }) => {
     .get()
   if (snapshot.exists()) throw new Error('Failed. username taken')
 
-  fb.auth()
+  await fb
+    .auth()
     .createUserWithEmailAndPassword(email, password)
     .then(async (res) => {
       const token = await Object.entries(res.user)[5][1].b
       await localStorage.setItem('token', token)
 
       // store the user data
-      fb.database().ref(`users/${res.user.uid}`).set({
+      await fb.database().ref(`users/${res.user.uid}`).set({
         email: email,
         username: username,
       })
 
       // store the user data accessibility with default to private
-      fb.database().ref(`accessibility/${username}`).set({
+      await fb.database().ref(`accessibility/${username}`).set({
         name: false,
+        user_id: res.user.uid,
         age: false,
-        profilePicture: false,
+        profile: false,
         workExperiences: false,
       })
     })

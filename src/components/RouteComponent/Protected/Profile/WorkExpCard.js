@@ -7,8 +7,8 @@ const WorkExpCard = ({ data, idx }) => {
   const textData = {
     company,
     start,
-    desc,
     end: isStillWorking ? 'now' : end,
+    desc,
   }
   const [showExpEditModal, setShowExpEditModal] = useState(false)
 
