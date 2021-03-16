@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom'
-import fb from '../../../firebase/firebaseConfig'
 import { AlertContext } from '../../../provider/AlertProvider'
 import { firebaseAuth } from '../../../provider/AuthProvider'
 import FormType from '../../FormComponent/FormType'
+import { signIn } from '../../../firebase/utils'
 
 const initialInputs = { email: '', password: '' }
 
@@ -36,23 +36,13 @@ const SignIn = () => {
   const onChangeHandler = (e) =>
     setInputs({ ...inputs, [e.target.name]: e.target.value })
 
-  const signIn = async (email, password) => {
-    await fb
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(async (res) => {
-        const newToken = await Object.entries(res.user)[5][1].b
-        localStorage.setItem('token', newToken)
-      })
-    setToken(localStorage.getItem('token'))
-  }
   const onSubmit = async (e) => {
     e.preventDefault()
     try {
       await signIn(email, password)
+      await setToken(localStorage.getItem('token'))
     } catch (err) {
       addAlert('danger', err.message)
-      console.log(err)
     }
   }
   return token ? (

@@ -7,15 +7,14 @@ import WorkExpCard from './Profile/WorkExpCard'
 
 const UserDetail = () => {
   let { username } = useParams()
-  console.log(username)
   const [userData, setUserData] = useState({ data: {}, isCurrentUser: null })
-  const { data, isCurrentUser } = userData
   const { addAlert } = useContext(AlertContext)
+  const { name, age, profile, workExperiences, isCurrentUser } = userData
 
   const fetchAccessibleData = useCallback(async () => {
     try {
-      const data = await getUserAllData(username)
-      await setUserData(data)
+      const res = await getUserAllData(username)
+      await setUserData(res)
     } catch (err) {
       addAlert('danger', err.message)
     }
@@ -24,6 +23,9 @@ const UserDetail = () => {
   useEffect(() => {
     fetchAccessibleData()
   }, [fetchAccessibleData])
+
+  useEffect(() => {
+  }, [userData])
 
   return !isCurrentUser ? (
     <>
@@ -38,8 +40,8 @@ const UserDetail = () => {
                 md={12}
                 className="m-auto d-md-flex justify-content-center"
               >
-                {data && data.profile ? (
-                  <Image fluid src={data.profile} roundedCircle />
+                {profile && profile ? (
+                  <Image fluid src={profile} roundedCircle />
                 ) : (
                   <Image
                     fluid
@@ -48,8 +50,8 @@ const UserDetail = () => {
                 )}
               </Col>
               <Col lg={9}>
-                <p>Name: {data && data.name ? data.name : 'private Data'}</p>
-                <p>Age: {data && data.age ? data.age : 'private Data'}</p>
+                <p>Name: {name ? name : 'private'}</p>
+                <p>Age: {age ? age : 'private'}</p>
               </Col>
             </Row>
           </Card.Body>
@@ -58,8 +60,8 @@ const UserDetail = () => {
       <Container className="my-5">
         <h2>User Work Experiences</h2>
         <hr />
-        {data && data.workExperiences ? (
-          data.workExperiences.map((workExperience, idx) => (
+        {workExperiences ? (
+          workExperiences.map((workExperience, idx) => (
             <WorkExpCard key={idx} data={workExperience} idx={idx} />
           ))
         ) : (

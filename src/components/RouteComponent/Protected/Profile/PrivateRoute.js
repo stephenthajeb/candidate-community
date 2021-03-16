@@ -4,7 +4,6 @@ import { firebaseAuth } from '../../../../provider/AuthProvider'
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const { token } = useContext(firebaseAuth)
-  console.log(token)
   return (
     <Route
       {...rest}

@@ -11,6 +11,7 @@ import Community from './components/RouteComponent/Unprotected/Community'
 import Register from './components/RouteComponent/Unprotected/Register'
 import SignIn from './components/RouteComponent/Unprotected/SignIn'
 import PrivateRoute from './components/RouteComponent/Protected/Profile/PrivateRoute'
+import Settings from './components/RouteComponent/Protected/AccountSettings/Settings'
 
 function App() {
   // Todo: Alert layout
@@ -19,12 +20,13 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <CustomNavbar />
-          <section className="container mt-5">
+          <section className="container mt-5 mb-5">
             <AlertBar />
             <Switch>
               <Route exact path="/" component={Community} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/signin" component={SignIn} />
+              <PrivateRoute exact path="/settings" component={Settings} />
               <PrivateRoute exact path="/profile" component={Profile} />
               <PrivateRoute
                 exact

@@ -34,28 +34,90 @@ export const submitExpData = async (data, idx) => {
     })
 }
 
+export const submitAccessibilitySettings = async (data) => {
+  const decoded = jwt_decode(localStorage.getItem('token'))
+  const snapshot = await fb
+    .database()
+    .ref(`users/${decoded.user_id}/username`)
+    .get()
+  const username = snapshot.val()
+  await fb.database().ref(`accessibility/${username}`).update(data)
+}
+
 export const getUserAllData = async (username) => {
   const decoded = jwt_decode(localStorage.getItem('token'))
   const snapshot = await fb.database().ref(`users/${decoded.user_id}`).get()
-  let data = snapshot.val()
-  let output
-  const userAccessibleData = await fb
-    .database()
-    .ref(`accessibility/${username}`)
-    .get()
+  let data = await snapshot.val()
+  const accSnapshot = await fb.database().ref(`accessibility/${username}`).get()
+  const userAccessibleData = await accSnapshot.val()
+  let output = {}
   //reading other user's userData
   if (data.username !== username) {
-    data = {}
     Object.keys(userAccessibleData).forEach((key) => {
-      //public atttribute
-      if (userAccessibleData[key] && data[key]) {
-        Object.assign(data, { key: data[key] })
+      // Public attribute
+      if (userAccessibleData[key]) {
+        output[key] = data[key]
       }
-      output = { data: { ...data }, isCurrentUser: false }
+      return { ...output, isCurrentUser: false }
     })
   } else {
-    output = { data: { ...data }, isCurrentUser: true }
+    return { ...output, isCurrentUser: true }
   }
-  console.log(output)
   return output
+}
+
+export const getAllUsername = async () => {
+  const snapshot = await fb.database().ref('/accessibility').get()
+  const data = await snapshot.val()
+  return Object.keys(data)
+}
+
+export const getCurrentUsername = async () => {
+  const decoded = jwt_decode(localStorage.getItem('token'))
+  const snapshot = await fb
+    .database()
+    .ref(`users/${decoded.user_id}/username`)
+    .get()
+  const username = await snapshot.val()
+  return username
+}
+
+export const signIn = async (email, password) => {
+  await fb
+    .auth()
+    .signInWithEmailAndPassword(email, password)
+    .then(async (res) => {
+      const newToken = await Object.entries(res.user)[5][1].b
+      await localStorage.setItem('token', newToken)
+    })
+}
+
+export const registerToFirebase = async ({ username, email, password }) => {
+  const snapshot = await fb
+    .database()
+    .ref('accessibility')
+    .child(username)
+    .get()
+  if (snapshot.exists()) throw new Error('Failed. username taken')
+
+  fb.auth()
+    .createUserWithEmailAndPassword(email, password)
+    .then(async (res) => {
+      const token = await Object.entries(res.user)[5][1].b
+      await localStorage.setItem('token', token)
+
+      // store the user data
+      fb.database().ref(`users/${res.user.uid}`).set({
+        email: email,
+        username: username,
+      })
+
+      // store the user data accessibility with default to private
+      fb.database().ref(`accessibility/${username}`).set({
+        name: false,
+        age: false,
+        profilePicture: false,
+        workExperiences: false,
+      })
+    })
 }

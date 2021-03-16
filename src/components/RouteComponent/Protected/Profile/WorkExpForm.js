@@ -4,12 +4,6 @@ import { submitExpData } from '../../../../firebase/utils'
 import { AlertContext } from '../../../../provider/AlertProvider'
 import FormType from '../../../FormComponent/FormType'
 const WorkExpForm = ({ showModal, hideModal, data, idx }) => {
-  // Start date
-  // End date (allow a current position option)
-  // Job title
-  // Company
-  // Company logo
-  // Job description
   const initialState = {
     title: '',
     start: '',
@@ -21,10 +15,26 @@ const WorkExpForm = ({ showModal, hideModal, data, idx }) => {
   }
 
   const [inputs, setInputs] = useState(data ? data : initialState)
-  const { start, end, company, isStillWorking, companyLogo, desc } = inputs
+  const {
+    title,
+    start,
+    end,
+    company,
+    isStillWorking,
+    companyLogo,
+    desc,
+  } = inputs
   const logoAllowedType = ['image/png']
   const { addAlert } = useContext(AlertContext)
   const formFields = [
+    {
+      label: 'Job position title',
+      componentType: 'input',
+      name: 'title',
+      type: 'text',
+      value: title,
+      required: true,
+    },
     {
       label: 'Start date',
       componentType: 'input',
@@ -66,7 +76,7 @@ const WorkExpForm = ({ showModal, hideModal, data, idx }) => {
       value: companyLogo,
       placeholder: companyLogo
         ? companyLogo.name
-        : 'eg: google.jpg with max 2Mb',
+        : 'eg: google.png with max 2Mb',
       required: true,
     },
     {
@@ -85,7 +95,6 @@ const WorkExpForm = ({ showModal, hideModal, data, idx }) => {
       setInputs({ ...inputs, companyLogo: e.target.files[0] })
     } else if (e.target.name === 'isStillWorking') {
       setInputs({ ...inputs, isStillWorking: !isStillWorking })
-      console.log(e.target)
     } else {
       setInputs({ ...inputs, [e.target.name]: e.target.value })
     }
@@ -95,12 +104,12 @@ const WorkExpForm = ({ showModal, hideModal, data, idx }) => {
     try {
       if (!isStillWorking && !end)
         throw new Error('Please choose your end date for this job experience')
-      console.log(idx)
       await submitExpData(inputs, idx)
       hideModal()
+      setInputs(initialState)
     } catch (err) {
+      hideModal()
       addAlert('danger', err.message)
-      console.log(err)
     }
   }
 

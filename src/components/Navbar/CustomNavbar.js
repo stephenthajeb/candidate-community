@@ -20,6 +20,10 @@ const authNavlinks = [
     path: '/profile',
     name: 'Profile',
   },
+  {
+    path: '/settings',
+    name: 'Settings',
+  },
 ]
 
 const CustomNavbar = () => {

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
 import { submitPersonalData } from '../../../../firebase/utils'
+import { AlertContext } from '../../../../provider/AlertProvider'
 import FormType from '../../../FormComponent/FormType'
 
 const PersonalDataForm = ({ showModal, hideModal, data }) => {
@@ -12,10 +13,9 @@ const PersonalDataForm = ({ showModal, hideModal, data }) => {
   const [inputs, setInputs] = useState(data ? data : initialState)
   const { name, age, profile } = inputs
   const profileAllowedType = ['image/png']
+  const { addAlert } = useContext(AlertContext)
 
-  useEffect(() => {
-    console.log(profile)
-  }, [profile])
+  useEffect(() => {}, [profile])
 
   const formFields = [
     {
@@ -24,7 +24,7 @@ const PersonalDataForm = ({ showModal, hideModal, data }) => {
       name: 'profile',
       value: profile,
       accept: profileAllowedType,
-      placeholder: profile ? profile.name : 'eg: profile.jpg with max 2Mb',
+      placeholder: profile ? profile.name : 'eg: profile.png with max 2Mb',
       required: true,
     },
     {
@@ -68,7 +68,8 @@ const PersonalDataForm = ({ showModal, hideModal, data }) => {
       await submitPersonalData(name, age, profile)
       hideModal()
     } catch (err) {
-      console.log(err.message)
+      hideModal()
+      addAlert('danger', err.message)
     }
   }
 

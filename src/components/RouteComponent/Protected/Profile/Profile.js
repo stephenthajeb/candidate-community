@@ -12,26 +12,25 @@ const Profile = () => {
   const [userData, setUserData] = useState({})
   const [showPdModal, setShowPdModal] = useState(false) //state to control Personal Data Modal
   const [showExpModal, setShowExpModal] = useState(false)
-
   const { token } = useContext(firebaseAuth)
+  const { username, name, email, profile, age, workExperiences } = userData
+  const textData = { username, email, name, age }
 
   useEffect(() => {
     if (token) {
       const decode = jwt_decode(token)
       const user_id = decode.user_id
-      var currentUserRef = fb.database().ref(`users/${user_id}`)
-      // 'value' event listener will actively listen to change
+      const currentUserRef = fb.database().ref(`users/${user_id}`)
+      // Real time updates : 'value' event listener will actively listen to change
       currentUserRef.on('value', (snapshot) => {
-        setUserData(snapshot.val())
+        if (snapshot.exists()) setUserData(snapshot.val())
       })
     }
   }, [token])
 
-  const { username, name, email, profile, age, workExperiences } = userData
-  const textData = { username, name, email, age }
-
   const hidePdModal = () => setShowPdModal(false)
   const hideExpModal = () => setShowExpModal(false)
+
   return (
     <>
       <Container>
@@ -72,7 +71,7 @@ const Profile = () => {
                   />
                 )}
               </Col>
-              <Col lg={9}>
+              <Col lg={9} className="mt-3">
                 {Object.keys(textData).map((key) => (
                   <p key={key}>
                     {`${key}: `}{' '}
@@ -92,6 +91,7 @@ const Profile = () => {
             <WorkExpCard key={idx} data={workExperience} idx={idx} />
           ))}
         <Button
+          type="submit"
           variant="success"
           className="w-100"
           onClick={() => setShowExpModal(true)}

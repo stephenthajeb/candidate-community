@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react'
-import fb from '../../../firebase/firebaseConfig'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import { Button } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
+import { AlertContext } from '../../../provider/AlertProvider'
+import { getAllUsername } from '../../../firebase/utils'
 
 const Community = () => {
   const [users, setUsers] = useState([])
   let history = useHistory()
+  const { addAlert } = useContext(AlertContext)
+
+  const fetchUsernames = useCallback(async () => {
+    try {
+      const data = await getAllUsername()
+      await setUsers(data)
+    } catch (err) {
+      addAlert('danger', err.message)
+    }
+  }, [addAlert])
 
   useEffect(() => {
-    fb.database()
-      .ref('/accessibility')
-      .get()
-      .then((snapshot) => {
-        console.log(snapshot.val())
-        const fetchedData = Object.keys(snapshot.val())
-        setUsers([...fetchedData])
-      })
-      .catch((err) => console.log(err))
-  }, [])
-
-  useEffect(() => console.log(users), [users])
+    fetchUsernames()
+  }, [fetchUsernames])
 
   return (
     <div>
@@ -28,7 +29,7 @@ const Community = () => {
         {users &&
           users.map((username) => (
             <li className="list-group-item" key={username}>
-              {username}
+              <span>{username}</span>
               <Button
                 variant="info"
                 className="float-right"

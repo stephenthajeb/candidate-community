@@ -17,7 +17,7 @@ const WorkExpCard = ({ data, idx }) => {
     <>
       <Card>
         <Card.Header>
-          <h5>
+          <h5 className="align-middle">
             {title}
             <span className="float-right">
               <Button
@@ -40,11 +40,11 @@ const WorkExpCard = ({ data, idx }) => {
             >
               <Image src={companyLogo} fluid />
             </Col>
-            <Col lg={9}>
+            <Col lg={9} className="mt-3">
               {Object.keys(textData).map((key) => (
-                <div key={key}>
+                <p key={key}>
                   {key} : <span>{data[key]}</span>{' '}
-                </div>
+                </p>
               ))}
             </Col>
           </Row>
